@@ -3,7 +3,7 @@ Contributors: pfefferle
 Donate link: http://www.amazon.de/gp/registry/X3MFPO2XK51W
 Tags: Ubiquity, firefox, search, blog
 Requires at least: 2.3
-Tested up to: 2.6
+Tested up to: 2.6.1
 Stable tag: 0.1
 
 a WordPress-Search-Plugin for the Ubiquity-Firefox-Addon. 
