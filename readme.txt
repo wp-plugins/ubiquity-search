@@ -10,7 +10,7 @@ a WordPress-Search-Plugin for the Ubiquity-Firefox-Addon.
 
 == Description ==
 
-
+A WordPress-Search-Plugin for the Ubiquity-Firefox-Addon (https://wiki.mozilla.org/Labs/Ubiquity/) 
 
 == Installation ==
 
