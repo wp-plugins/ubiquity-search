@@ -1,5 +1,5 @@
 === Plugin Name ===
-Contributors: pfefferle
+Contributors: Matthias Pfefferle
 Donate link: http://www.amazon.de/gp/registry/X3MFPO2XK51W
 Tags: Ubiquity, firefox, search, blog
 Requires at least: 2.3
