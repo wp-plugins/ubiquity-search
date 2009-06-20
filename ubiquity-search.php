@@ -1,12 +1,22 @@
 <?php
 /*
-Plugin Name: Ubiquity-Blog-Search for WordPress
+Plugin Name: Ubiquity-Blog-Search
 Plugin URI: http://notizblog.org/projects/ubiquity-search-for-wordpress/
-Description: A WordPress-Search-Plugin for the Ubiquity-Firefox-Addon.
-Version: 0.1
+Description: A WordPress-Search-Plugin for the Ubiquity.
+Version: 0.2
 Author: Matthias Pfefferle
 Author URI: http://notizblog.org/
 */
+
+// Pre-2.6 compatibility
+if ( ! defined( 'WP_CONTENT_URL' ) )
+    define( 'WP_CONTENT_URL', get_option( 'siteurl' ) . '/wp-content' );
+if ( ! defined( 'WP_CONTENT_DIR' ) )
+    define( 'WP_CONTENT_DIR', ABSPATH . 'wp-content' );
+if ( ! defined( 'WP_PLUGIN_URL' ) )
+    define( 'WP_PLUGIN_URL', WP_CONTENT_URL. '/plugins' );
+if ( ! defined( 'WP_PLUGIN_DIR' ) )
+    define( 'WP_PLUGIN_DIR', WP_CONTENT_DIR . '/plugins' );
 
 // register
 if (isset($wp_version)) {
@@ -26,25 +36,6 @@ class UbiquitySearch {
   function init() {
     global $wp_rewrite;
     $wp_rewrite->flush_rules();
-  }
-  
-  /**
-   * get the plugin-path.
-   */
-  function getPath($abs = false) {
-    $plugin = 'ubiquity-search';
-
-    $base = plugin_basename(__FILE__);
-    if ($base != __FILE__) {
-      $plugin = dirname($base);
-    }
-
-    $path = 'wp-content/plugins/' . $plugin;
-    
-    if ($abs)
-      return ABSPATH . $path;
-    else
-      return get_option('siteurl') . '/' . $path;
   }
 
   /**
