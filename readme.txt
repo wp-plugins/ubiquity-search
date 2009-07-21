@@ -3,8 +3,8 @@ Contributors: Matthias Pfefferle
 Donate link: http://www.amazon.de/gp/registry/X3MFPO2XK51W
 Tags: Ubiquity, firefox, search, blog
 Requires at least: 2.3
-Tested up to: 2.8
-Stable tag: 0.2
+Tested up to: 2.8.2
+Stable tag: 1.0
 
 A plugin to let visitors search through your blog with the Ubiquity-Firefox-Addon. 
 
@@ -12,6 +12,10 @@ A plugin to let visitors search through your blog with the Ubiquity-Firefox-Addo
 
 A plugin to let visitors search through your blog with the Ubiquity-Firefox-Addon
 (https://wiki.mozilla.org/Labs/Ubiquity/) 
+
+== Screenshots ==
+
+1. Preview search results
 
 == Installation ==
 

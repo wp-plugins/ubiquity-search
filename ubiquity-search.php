@@ -3,7 +3,7 @@
 Plugin Name: Ubiquity-Blog-Search
 Plugin URI: http://notizblog.org/projects/ubiquity-search-for-wordpress/
 Description: A WordPress-Search-Plugin for the Ubiquity.
-Version: 0.2
+Version: 1.0
 Author: Matthias Pfefferle
 Author URI: http://notizblog.org/
 */
@@ -15,11 +15,15 @@ if (isset($wp_version)) {
   add_action('init', array('UbiquitySearch', 'init'));
   
   add_action('wp_head', array('UbiquitySearch', 'metaTags'), 5);
+  
+  // json feed
+  add_action('do_feed_ubiquity', array('UbiquitySearch', 'json_feed'));
 }
 
 /**
  * UbiquitySearch Class
  * 
+ * @author Matthias Pfefferle
  */
 class UbiquitySearch {
   
@@ -30,6 +34,9 @@ class UbiquitySearch {
 
   /**
    * add 'ubiquity' as a valid query variables.
+   *
+   * @param array $vars
+   * @return array
    */
   function queryVars($vars) {
     $vars[] = 'ubiquity';
@@ -62,6 +69,24 @@ class UbiquitySearch {
       }
     }
   }
+  
+  /**
+   * json output
+   */
+  function json_feed() {
+    $output = array();
+    query_posts('showposts=5');
+    while (have_posts()) {
+      the_post();
+      $output[] = array('title' => get_the_title(),
+                        'excerpt' => get_the_excerpt(),
+                        'date' => get_the_time('F j, Y H:i'),
+                        'link' => get_permalink());
+    }
+
+    header('Content-Type: application/json; charset=' . get_option('blog_charset'), true);
+    echo json_encode($output);
+  }
 
   /**
    * print JavaScript code
@@ -72,14 +97,55 @@ class UbiquitySearch {
 
     header('Content-type: application/x-javascript');
 ?>
-makeSearchCommand({
+CmdUtils.makeSearchCommand({
   icon: "<?php bloginfo('url'); ?>/favicon.ico",
-  name: "search-<?php echo sanitize_title(get_bloginfo('name')); ?>",
+  url: "<?php bloginfo('wpurl'); ?>",
+  names: ["<?php echo sanitize_title(get_bloginfo('name')); ?> search",
+          "search <?php echo sanitize_title(get_bloginfo('name')); ?>"],
   author: {name: "<?php echo $splittedMail[0]; ?>", email: "<?php bloginfo('admin_email'); ?>"},
-  description: "Searches the '<?php bloginfo('name'); ?>' weblog",
-  url:"<?php bloginfo('wpurl'); ?>/?s={QUERY}",
-  preview: function( pblock ) {
-    pblock.innerHTML = CmdUtils.renderTemplate("Search the <em><a href='<?php bloginfo('url'); ?>'><?php bloginfo('name'); ?></a></em> weblog");
+  description: "'<?php bloginfo('name'); ?>' blog-search",
+  help: "What do you want to find on <em><?php bloginfo('name') ?></em>. Mark a word in the text or type in the term you want to search for.",
+  url: "<?php bloginfo('wpurl'); ?>/?s={QUERY}",
+  
+  // preview output
+  preview : function(previewBlock, {object}){ 
+    if (object.text == "") {
+      previewBlock.innerHTML = this.help;
+    } else {
+  
+      previewBlock.innerHTML = _("Searching for posts on notizblog...");
+      // the api url
+      var apiUrl = "<?php bloginfo('wpurl'); ?>/";
+      // query params  
+      var apiParams = {
+        feed: "ubiquity",
+        s: object.text
+      };
+        
+      // preview command
+      CmdUtils.previewAjax(previewBlock, {
+        type: "GET",
+        url: apiUrl,
+        data: apiParams,
+        datatype: "string",
+        error: function() {
+          previewBlock.innerHTML = "<p class='error'>"+_("Error searching notizblog")+"</p>";
+        },
+        success: function(responseData) {
+          responseData = Utils.decodeJson(responseData);
+          var htmlTemplate = "Searchresults for '<em>"+object.text+"</em>': <ul>";
+          
+          for (var i = 0; i < responseData.length; ++i) {
+            // html output
+            htmlTemplate += "<li><a href='"+responseData[i].link+"'>";
+            htmlTemplate += responseData[i].title.replace(new RegExp(object.text,"i"), "<span style='background-color: red;'>"+object.text+"</span>");
+            htmlTemplate += "</a></li>"; 
+          }
+    
+          previewBlock.innerHTML = htmlTemplate+"</ul>";       
+        }
+      });
+    }
   }
 });
 <?php
