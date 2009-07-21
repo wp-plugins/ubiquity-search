@@ -3,7 +3,7 @@
 Plugin Name: Ubiquity-Blog-Search
 Plugin URI: http://notizblog.org/projects/ubiquity-search-for-wordpress/
 Description: A WordPress-Search-Plugin for the Ubiquity.
-Version: 1.0
+Version: 1.0.1
 Author: Matthias Pfefferle
 Author URI: http://notizblog.org/
 */
@@ -75,7 +75,6 @@ class UbiquitySearch {
    */
   function json_feed() {
     $output = array();
-    query_posts('showposts=5');
     while (have_posts()) {
       the_post();
       $output[] = array('title' => get_the_title(),
