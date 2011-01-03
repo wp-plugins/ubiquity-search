@@ -3,7 +3,7 @@
 Plugin Name: Ubiquity-Blog-Search
 Plugin URI: http://notizblog.org/projects/ubiquity-search-for-wordpress/
 Description: A WordPress-Search-Plugin for the Ubiquity.
-Version: 1.0.1
+Version: 1.0.2
 Author: Matthias Pfefferle
 Author URI: http://notizblog.org/
 */
@@ -113,25 +113,20 @@ CmdUtils.makeSearchCommand({
     } else {
   
       previewBlock.innerHTML = _("Searching for posts on notizblog...");
-      // the api url
-      var apiUrl = "<?php bloginfo('wpurl'); ?>/";
-      // query params  
-      var apiParams = {
-        feed: "ubiquity",
-        s: object.text
-      };
         
       // preview command
       CmdUtils.previewAjax(previewBlock, {
         type: "GET",
-        url: apiUrl,
-        data: apiParams,
-        datatype: "string",
+        url: "<?php bloginfo('wpurl'); ?>/",
+        data: {
+          feed: "ubiquity",
+          s: object.text
+        },
+        dataType: "json",
         error: function() {
           previewBlock.innerHTML = "<p class='error'>"+_("Error searching notizblog")+"</p>";
         },
         success: function(responseData) {
-          responseData = Utils.decodeJson(responseData);
           var htmlTemplate = "Searchresults for '<em>"+object.text+"</em>': <ul>";
           
           for (var i = 0; i < responseData.length; ++i) {
